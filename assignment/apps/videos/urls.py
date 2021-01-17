@@ -12,7 +12,3 @@ router.register(r"keys", APIKeyViewSet, basename="keys")
 urlpatterns = [
     path("", include(router.urls)),
 ]
-
-from videos.tasks.get_latest_video import start_searching_and_adding_youtube_videos
-
-# start_searching_and_adding_youtube_videos()

@@ -8,53 +8,69 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='APIKey',
+            name="APIKey",
             fields=[
-                ('key', models.TextField(primary_key=True, serialize=False)),
-                ('active', models.BooleanField(default=False)),
+                ("key", models.TextField(primary_key=True, serialize=False)),
+                ("active", models.BooleanField(default=False)),
             ],
             options={
-                'db_table': 'APIkeys',
+                "db_table": "APIkeys",
             },
         ),
         migrations.CreateModel(
-            name='Video',
+            name="Video",
             fields=[
-                ('title', models.TextField()),
-                ('description', models.TextField()),
-                ('publishedTime', models.DateTimeField()),
-                ('videoId', models.TextField(primary_key=True, serialize=False)),
-                ('channelId', models.TextField()),
-                ('createdOn', models.DateTimeField(auto_now_add=True)),
-                ('updatedOn', models.DateTimeField(auto_now=True)),
+                ("title", models.TextField()),
+                ("description", models.TextField()),
+                ("publishedTime", models.DateTimeField()),
+                ("videoId", models.TextField(primary_key=True, serialize=False)),
+                ("channelId", models.TextField()),
+                ("createdOn", models.DateTimeField(auto_now_add=True)),
+                ("updatedOn", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'db_table': 'Videos',
+                "db_table": "Videos",
             },
         ),
         migrations.CreateModel(
-            name='VideoThumbNail',
+            name="VideoThumbNail",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('screenType', models.CharField(max_length=20)),
-                ('url', models.TextField()),
-                ('height', models.IntegerField()),
-                ('width', models.IntegerField()),
-                ('createdOn', models.DateTimeField(auto_now_add=True)),
-                ('updatedOn', models.DateTimeField(auto_now=True)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='thumbnail', to='videos.Video')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("screenType", models.CharField(max_length=20)),
+                ("url", models.TextField()),
+                ("height", models.IntegerField()),
+                ("width", models.IntegerField()),
+                ("createdOn", models.DateTimeField(auto_now_add=True)),
+                ("updatedOn", models.DateTimeField(auto_now=True)),
+                (
+                    "video",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="thumbnail",
+                        to="videos.Video",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'VideoThumbNails',
+                "db_table": "VideoThumbNails",
             },
         ),
         migrations.AddIndex(
-            model_name='video',
-            index=models.Index(fields=['publishedTime', 'title'], name='Videos_publish_5e8e80_idx'),
+            model_name="video",
+            index=models.Index(
+                fields=["publishedTime", "title"], name="Videos_publish_5e8e80_idx"
+            ),
         ),
     ]

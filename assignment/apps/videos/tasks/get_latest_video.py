@@ -1,13 +1,9 @@
 import datetime
-import time
-from django.db import connections
 
 from videos.models.key import APIKey
 from videos.models.video import Video, VideoThumbNail
-from videos.serializers.key import APIKeySerializer
 from videos.helpers.youtube import youtube_api_helper
-
-from background_task import background
+from celery import shared_task
 
 
 def search_youtube(query, limit):
@@ -15,7 +11,7 @@ def search_youtube(query, limit):
     if not api_keys:
         return {}
     api_obj = api_keys[0]
-    response = youtube_api_helper(query, limit, api_obj.key)
+    response = youtube_api_helper(api_obj.key)
 
     if not response:
         api_obj.active = False
@@ -79,7 +75,7 @@ def search_and_add_latest_videos():
     search_response = search_youtube("ind vs aus ", 10)
     if search_response == {}:
         return
-    # sort this
+    sorted(search_response, key=lambda i: i["snippet"]["publishedAt"], reverse=True)
     for response in search_response:
         published_time = get_date_time_object_from_string(
             response["snippet"]["publishedAt"]
@@ -90,7 +86,6 @@ def search_and_add_latest_videos():
             recent_time = published_time
 
 
-from celery import shared_task
 @shared_task
 def start_searching_and_adding_youtube_videos():
     if list(APIKey.objects.filter(active=True)):

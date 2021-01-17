@@ -2,9 +2,6 @@ from django.db.models import Q
 from django_filters import FilterSet, filters
 from rest_framework import mixins, viewsets
 
-from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
-
 from videos.models.video import Video
 from videos.serializers.video import VideoSerializer
 
@@ -22,7 +19,8 @@ class VideoFilter(FilterSet):
 
 
 class VideoViewSet(
-    mixins.ListModelMixin, viewsets.GenericViewSet,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
 ):
     queryset = Video.objects.all().order_by("-publishedTime")
     serializer_class = VideoSerializer

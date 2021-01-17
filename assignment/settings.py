@@ -1,9 +1,9 @@
 import os
 import sys
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-import sys
 
 PROJECT_ROOT = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(PROJECT_ROOT, "apps"))
@@ -23,11 +23,14 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.staticfiles",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.staticfiles",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "constance",
     "videos",
-    "background_task",
     "rest_framework",
     "django_filters",
 ]
@@ -37,8 +40,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "UNAUTHENTICATED_USER": None,
 }
-
+MIDDLEWARE = [
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+]
 ROOT_URLCONF = "assignment.urls"
+
+CONSTANCE_CONFIG = {
+    "searchKeyword": ("ind vs aus", "key word for youtube to search"),
+    "limit": (10, "limit"),
+}
 
 TEMPLATES = [
     {
@@ -68,18 +81,23 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("POSTGRES_DBNAME", "fampay"),
-        "USER": os.environ.get("PORTGRES_USERNAME", "postgres"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
-        "HOST": os.environ.get("POSTGRES_HOST", "postgres"),
+        "USER": os.environ.get("PORTGRES_USERNAME", ""),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", 5432),
     },
     "redis": {
-            "HOST": os.environ.get("REDIS_HOST", "redis"),
-            "PORT": os.environ.get("REDIS_PORT", 6379),
-            "DB_INDEX": os.environ.get("REDIS_DB_INDEX", 11),
-        },
+        "HOST": os.environ.get("REDIS_HOST", "localhost"),
+        "PORT": os.environ.get("REDIS_PORT", 6379),
+        "DB_INDEX": os.environ.get("REDIS_DB_INDEX", 11),
+    },
 }
 
+CONSTANCE_REDIS_CONNECTION = {
+    "host": DATABASES["redis"]["HOST"],
+    "port": DATABASES["redis"]["PORT"],
+    "db": 0,
+}
 
 CELERY_BROKER_URL = "redis://{host}:{port}".format(
     host=DATABASES["redis"]["HOST"], port=DATABASES["redis"]["PORT"]
@@ -87,7 +105,6 @@ CELERY_BROKER_URL = "redis://{host}:{port}".format(
 CELERY_RESULT_BACKEND = "redis://{host}:{port}".format(
     host=DATABASES["redis"]["HOST"], port=DATABASES["redis"]["PORT"]
 )
-from datetime import timedelta
 
 CELERY_BEAT_SCHEDULE = {
     "fetch_latest_video": {
