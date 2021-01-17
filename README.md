@@ -9,7 +9,7 @@
     $ docker-compose run web python manage.py createsuperuser
     $ docker-compose up
   3. Add Keys 
-    $ curl --location --request POST 'http://localhost:8000/api/videos/' \
+    $ curl --location --request POST 'http://localhost:8000/api/keys/' \
         --header 'Content-Type: application/json' \
         --data-raw '{
             "active": true,
