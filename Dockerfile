@@ -19,6 +19,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PATH=/root/local/bin:$PATH
 
 WORKDIR /src
+RUN mkdir /src/staticfiles
 
 COPY . /src/
 

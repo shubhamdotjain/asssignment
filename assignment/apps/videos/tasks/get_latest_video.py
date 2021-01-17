@@ -77,9 +77,6 @@ def search_and_add_latest_videos():
 
     recent_time = get_time_of_recent_uploaded_video()
     search_response = search_youtube("ind vs aus ", 10)
-    from pprint import pprint
-
-    pprint(search_response)
     if search_response == {}:
         return
     # sort this
@@ -96,8 +93,5 @@ def search_and_add_latest_videos():
 from celery import shared_task
 @shared_task
 def start_searching_and_adding_youtube_videos():
-    print(list(APIKey.objects.filter(active=True)))
-    print(list(APIKey.objects.all()))
     if list(APIKey.objects.filter(active=True)):
         search_and_add_latest_videos()
-        print("yes")

@@ -13,10 +13,12 @@ services:
     links:
       - postgres
       - redis
-    command: bash -c "pip install -r requirements.txt && python manage.py migrate && export DJANGO_SETTINGS_MODULE=assignment.settings && gunicorn assignment.wsgi:application -b 0.0.0.0:8000 -w 1 --log-level info --keep-alive 200"
+    command: bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn assignment.wsgi:application -b 0.0.0.0:8000 -w 1 --log-level info --keep-alive 200"
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - static_volume:/src/staticfiles
   postgres:
       image: postgres:latest
       ports:
@@ -45,3 +47,11 @@ services:
     depends_on:
       - redis
       - web
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+volumes:
+  static_volume:

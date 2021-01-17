@@ -8,7 +8,7 @@ def youtube_api_helper(query, limit, key):
 
     try:
         service_object = build(
-            API_SERVICE_NAME, API_VERSION, developerKey=DEVELOPER_KEY
+            API_SERVICE_NAME, API_VERSION, developerKey=DEVELOPER_KEY, cache_discovery=False
         )
         search_response = (
             service_object.search()
@@ -19,7 +19,6 @@ def youtube_api_helper(query, limit, key):
 
     except Exception:
         import traceback
-
         traceback.print_exc()
         return {}
 
